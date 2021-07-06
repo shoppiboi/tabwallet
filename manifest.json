@@ -3,11 +3,12 @@
     "name": "TabWallet",
     "description":  "Extension for the storage and retrieval of browser sessions.",
     "version":  "1.0",
-    "action": {
-        "default_tite": "Click to access your TabWallet"
-    },
     "background": {
         "service_worker":   "background.js"
+    },
+    "action": {
+        "default_tite": "Click to access your TabWallet",
+        "default_popup":    "popup.html"
     },
     "permissions":  [
         "storage",

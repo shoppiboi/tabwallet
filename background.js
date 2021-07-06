@@ -1,4 +1,7 @@
-console.log("background running");
+// var backgroundData = {
+//     saveSpecificTabs = false,
+//     tabs = []
+// };
 
 //  retrieve all tabs in current window
 function getTabs() {   
@@ -36,9 +39,16 @@ chrome.action.onClicked.addListener(async function() {
     var tabs = await getTabs();
 
     var specificTabs = checkForHighlighted(tabs);
-    if (!specificTabs) {
+    if (!specificTabs) {    //  if checkForHighlighted returns "false"
         console.log("No tabs were highlighted");
     } else {
+        tabsToSave = specificTabs;
         console.log("Some tabs were highlighted");
+    }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, reponse) => {
+    if (message === "test") {
+        console.log("Hello I am a test");
     }
 });

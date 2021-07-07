@@ -30,10 +30,11 @@ function checkForHighlighted(tabs) {
     return false;
 }
 
+//  listens for specific commands from popup.js and performs tasks in accordance
 chrome.runtime.onMessage.addListener(async function(message, sender, sendResponse) {
-    if (message === "pre_load_tabs") {
+    if (message === "pre_save_tabs") {
         storeCurrentTabs()
-        .then(sendResponse(""));
+        .then(sendResponse("Tabs pre-saved."));
         return true;
     }
 });

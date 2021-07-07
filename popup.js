@@ -12,7 +12,7 @@ class Tab {
 class Session {
     constructor(name) {
         this.name = name;
-        this.sites = [];
+        this.tabs = [];
     }
 
     //  add a Tab to the Session
@@ -26,24 +26,39 @@ class Session {
 }
 
 function getCurrentTabs() {
-
     return new Promise((resolve, reject) => {
         try {
             chrome.storage.local.get('currenttabs', function(results) {
-                console.log(results);
                 resolve(results.currenttabs);
-            })
+            });
         } catch(e) {
-            reject(1);
+            reject("Couldn't get current tabs.");
         }
     });
 }
 
 //  uses the pre-saved tabs to create a new session
+
+// BUG: PRE-SAVE-TABS DOES NOT DO IT WITH EACH NEW TIME.
+//      SEEMS TO REQUIRE A DOUBLE REFRESH
 function createSession() {
 
+    var newSession = new Session("Session 1");
     
+    getCurrentTabs()
+    .then(function(currentTabs) {
+        for (x in currentTabs) {
+            newSession.addTab(
+                new Tab(
+                    currentTabs[x].title, 
+                    currentTabs[x].url, 
+                    currentTabs[x].favIconUrl
+                )
+            )
+        }
+    }); 
 
+    console.log(newSession);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -51,6 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.runtime.sendMessage("pre_save_tabs", function(response) {
         console.log(response)
     });
+
+    createSession();
 
     var newSessionButton = document.getElementById('savebutton');
     newSessionButton.addEventListener('click', () => {

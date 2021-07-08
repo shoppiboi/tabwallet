@@ -28,6 +28,29 @@ function checkForHighlighted(tabs) {
     }
 
     return false;
+}   
+
+//  obtains and pre-saves the tabs currently open at the time of opening the extension
+async function storeCurrentTabs() {
+    var tabs = await getTabs(); //  gets all the tabs open
+
+    var specificTabs = checkForHighlighted(tabs);   //  checks whether any tabs are highlighted
+    
+    //  stores all tabs into the Chrome API, or only the highlighted ones if there are any
+    toChromeStorage((specificTabs == false) ? tabs : specificTabs);
+}
+
+//  pre-saves the provided tabs into the Chrome API under the name "currentabs"
+function toChromeStorage(tabs) {
+    console.log("Tabs to save: ", tabs);  //  
+    return new Promise((resolve, reject) => {
+        try {
+            chrome.storage.local.set({"currenttabs": tabs}, function(){});
+            resolve(0);
+        } catch(e) {
+            reject(1);
+        }
+    });
 }
 
 //  listens for specific commands from popup.js and performs tasks in accordance
@@ -39,26 +62,3 @@ chrome.runtime.onMessage.addListener(async function(message, sender, sendRespons
     }
 });
 
-//  obtains and pre-saves the tabs currently open at the time of opening the extension
-async function storeCurrentTabs() {
-    var tabs = await getTabs(); //  gets all the tabs open
-
-    var specificTabs = checkForHighlighted(tabs);   //  checks whether any tabs are highlighted
-    
-    //  stores all tabs into the Chrome API, or only the highlighted ones if there are any
-    toChromeStorage((specificTabs == false) ? tabs : specificTabs);
-
-    return true;
-}
-
-//  pre-saves the provided tabs into the Chrome API under the name "currentabs"
-function toChromeStorage(tabs) {
-    return new Promise((resolve, reject) => {
-        try {
-            chrome.storage.local.set({"currenttabs": tabs}, function(){});
-            resolve(0);
-        } catch(e) {
-            reject(1);
-        }
-    });
-}

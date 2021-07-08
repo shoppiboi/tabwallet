@@ -38,9 +38,6 @@ function getCurrentTabs() {
 }
 
 //  uses the pre-saved tabs to create a new session
-
-// BUG: PRE-SAVE-TABS DOES NOT DO IT WITH EACH NEW TIME.
-//      SEEMS TO REQUIRE A DOUBLE REFRESH
 function createSession() {
 
     var newSession = new Session("Session 1");
@@ -67,10 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(response)
     });
 
-    createSession();
-
     var newSessionButton = document.getElementById('savebutton');
     newSessionButton.addEventListener('click', () => {
-        getCurrentTabs();
+        createSession();
     }, false);
 })

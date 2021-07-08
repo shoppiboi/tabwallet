@@ -6,11 +6,11 @@ function getTabs() {
                 currentWindow: true //  only care about tabs in current window
             }, function(tabs) {
 
-                let siteArray = [];
+                let tabArray = [];
                 for (var i = 0; i < tabs.length; i++) {
-                    siteArray.push(tabs[i]);
+                    tabArray.push(tabs[i]);
                 }
-                resolve(siteArray); //  return the list of sites if succesful
+                resolve(tabArray); //  return the list of sites if succesful
             });
         } catch (e) {
             reject(e);
@@ -37,11 +37,11 @@ async function storeCurrentTabs() {
     var specificTabs = checkForHighlighted(tabs);   //  checks whether any tabs are highlighted
     
     //  stores all tabs into the Chrome API, or only the highlighted ones if there are any
-    toChromeStorage((specificTabs == false) ? tabs : specificTabs);
+    currentTabsToChromeStorage((specificTabs == false) ? tabs : specificTabs);
 }
 
 //  pre-saves the provided tabs into the Chrome API under the name "currentabs"
-function toChromeStorage(tabs) {
+function currentTabsToChromeStorage(tabs) {
     console.log("Tabs to save: ", tabs);  //  
     return new Promise((resolve, reject) => {
         try {
@@ -61,4 +61,3 @@ chrome.runtime.onMessage.addListener(async function(message, sender, sendRespons
         return true;
     }
 });
-

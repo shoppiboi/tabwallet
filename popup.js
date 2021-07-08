@@ -1,35 +1,8 @@
-
-//  object for each specific tab
-class Tab {
-    constructor(title, url, icon) {
-        this.title = title;
-        this.url = url;
-        this.icon = icon;
-    }
-}
-
-//  contains the information regarding the Session and its individual tabs
-class Session {
-    constructor(name) {
-        this.name = name;
-        this.tabs = [];
-    }
-
-    //  add a Tab to the Session
-    addTab(tab) {
-        this.tabs.push(tab);
-    }
-
-    deleteTab(tabIndex) {
-        //  insert code to delete specific Tab from a Session 
-    }
-}
-
 function getCurrentTabs() {
     return new Promise((resolve, reject) => {
         try {
-            chrome.storage.local.get('currenttabs', function(results) {
-                resolve(results.currenttabs);
+            chrome.storage.local.get("currenttabs", function(result) {
+                resolve(result.currenttabs);
             });
         } catch(e) {
             reject("Couldn't get current tabs.");
@@ -37,28 +10,70 @@ function getCurrentTabs() {
     });
 }
 
-//  uses the pre-saved tabs to create a new session
-function createSession() {
-
-    var newSession = new Session("Session 1");
-    
-    getCurrentTabs()
-    .then(function(currentTabs) {
-        for (x in currentTabs) {
-            newSession.addTab(
-                new Tab(
-                    currentTabs[x].title, 
-                    currentTabs[x].url, 
-                    currentTabs[x].favIconUrl
-                )
-            )
+function getAllSessions() {
+    return new Promise((resolve, reject) => {
+        try {
+            chrome.storage.local.get("sessions", function(result) {
+                console.log(result.sessions);
+                resolve(
+                        (typeof(result.sessions) === "undefined") ? [] : result.sessions
+                );
+            });
+        } catch(e) {
+            reject("Couldn't get all sessions");
         }
-    }); 
-
-    console.log(newSession);
+    });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+//  uses the pre-saved tabs to create a new session
+async function createSession() {
+    let allSessions = await getAllSessions();
+
+    //  create a Session object in a format that can be JSONified
+    var newSession = {
+        name: "Session " + (allSessions.length + 1),
+        tabs: []
+    };
+
+    console.log("The new session is: ", newSession);    //  testing
+
+    //  add tabs to the new session
+    await getCurrentTabs()
+    .then(function(currentTabs) {
+        for (x in currentTabs) {
+            newSession.tabs.push(
+                {
+                    title: currentTabs[x].title,
+                    url: currentTabs[x].url,
+                    favIconUrl: currentTabs[x].favIconUrl
+                }
+            );
+        }
+    });
+
+    allSessions.push(newSession);
+    await updateSessions(allSessions);
+}
+
+//  pre-saves the provided tabs into the Chrome API under the name "currentabs"
+function updateSessions(sessions) {
+    console.log("Session to save: ", sessions);  //  
+    return new Promise((resolve, reject) => {
+        try {
+            chrome.storage.local.set({"sessions": sessions}, function(){});
+            resolve(0);
+        } catch(e) {
+            reject(1);
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+
+    chrome.storage.local.clear();
+
+    let gang = await getAllSessions();
+    console.log(gang);
 
     chrome.runtime.sendMessage("pre_save_tabs", function(response) {
         console.log(response)

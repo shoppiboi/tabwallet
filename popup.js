@@ -117,9 +117,6 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
 }
 
 function clearSessionDivs() {
-
-    console.log("Hello");
-
     let container = document.getElementById('sessions');
 
     while (container.firstChild) {

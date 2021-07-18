@@ -54,6 +54,8 @@ async function createSession() {
 
     allSessions.push(newSession);
     await updateSessions(allSessions);
+
+    initialLoad(allSessions);
 }
 
 //  pre-saves the provided tabs into the Chrome API under the name "currentabs"
@@ -70,6 +72,8 @@ function updateSessions(sessions) {
 }
 
 function initialLoad(loadedSessions) {
+    clearSessionDivs();
+
     let elementNoSessionsText = document.getElementById('nosessionstext');
 
     if (loadedSessions.length > 0) {
@@ -113,12 +117,19 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
 }
 
 function clearSessionDivs() {
-    
+
+    console.log("Hello");
+
+    let container = document.getElementById('sessions');
+
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
 
-    chrome.storage.local.clear();
+    // chrome.storage.local.clear();
 
     chrome.runtime.sendMessage("pre_save_tabs", function(response) {
         console.log(response)

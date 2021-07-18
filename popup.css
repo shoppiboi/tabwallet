@@ -26,10 +26,6 @@
     overflow-y: auto;
 }
 
-#session--content {
-
-}
-
 #nosessionstext {
     display: none;
     font-style: italic;
@@ -43,9 +39,7 @@
     height: 70px;
     border-bottom: 1px solid rgb(200, 200, 200);
     margin: 0;
-    overflow: hidden;
-    overflow-x: hidden;
-    white-space: nowrap;
+
 }
 
 .session--div:hover {

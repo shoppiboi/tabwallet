@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang= en >
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" contect="width=device=width, initial-scale=1.0">
+        <meta charset= UTF-8 >
+        <meta name=viewport content="width=device-width", initial-scale=1.0>
         
         <style>
             body {
@@ -14,11 +14,42 @@
     </head>
     
     <body>
-        <script src="popup.js"></script>
-        <link rel="stylesheet" href="popup.css">
+        <script src=popup.js></script>
+        <link rel=stylesheet  href= popup.css>
     </body>
 
-    <h1>Hello World!</h1>
+    <div id=container>
+        <div id=header>
+            <div id=appheader>
+                <h1 id=titletext>Tab Wallet</h1>
+                <div id=rightcontainer>
+                    <!--Exit button here-->
+                </div>
+            </div>
+        </div>
 
-    <button id='savebutton'>Save</button>
-    </html>
+        <div id=content>
+            <div id=session--content>
+                <h3 id=nosessionstext>No sessions yet.</h3>
+
+                <div id=sessions>
+
+                    <!-- <div class=session--div>
+                        <div class=session--title>Session 1</div>
+                        <div class=session--tabcount>Number of tabs: 3</div>
+                    </div>
+
+                    <div class=session--div>
+                        <div class=session--title>Session 2</div>
+                        <div class=session--tabcount>Number of tabs: 5</div>
+                    </div> -->
+
+                </div>
+            </div>
+        </div>
+
+        <div id=footer>
+            <button class=footerbuttons id=createsession>Save</button>
+        </div>
+    </div>
+</html>

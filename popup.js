@@ -10,6 +10,7 @@ function getCurrentTabs() {
     });
 }
 
+//  retrieves and returns all the Sessions stored in chrome.storage.local
 function getAllSessions() {
     return new Promise((resolve, reject) => {
         try {
@@ -31,7 +32,7 @@ async function createSession() {
 
     //  create a Session object in a format that can be JSONified
     var newSession = {
-        name: "Session " + (allSessions.length + 1),
+        title: "Session " + ((typeof(allSessions) == 'undefined') ? 1 : (allSessions.length + 1)),
         tabs: []
     };
 
@@ -68,18 +69,66 @@ function updateSessions(sessions) {
     });
 }
 
+function initialLoad(loadedSessions) {
+    let elementNoSessionsText = document.getElementById('nosessionstext');
+
+    if (loadedSessions.length > 0) {
+        elementNoSessionsText.style.display = 'none';
+        renderSessions(loadedSessions);
+    } else {
+        elementNoSessionsText.style.display = 'block';
+    }
+}
+
+function renderSessions(sessions) {
+    let sessionContainer = document.getElementById('sessions');
+
+    for (var i = 0; i < sessions.length; i++) {
+
+        console.log(sessions[i]);
+
+        sessionContainer.appendChild(
+            createSessionDiv(i, sessions[i].title, sessions[i].tabs.length)
+        );
+    }
+}
+
+function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
+    let newDiv = document.createElement('div');
+    newDiv.id = sessionIndex;
+    newDiv.className = 'session--div';
+
+    let title = document.createElement('div');
+    title.className = 'session--title';
+    title.innerHTML = sessionTitle;
+
+    let tabCount = document.createElement('div');
+    tabCount.className = 'session--tabcount';
+    tabCount.innerHTML = 'Number of tabs: ' + sessionTabCount;
+
+    newDiv.appendChild(title);
+    newDiv.append(tabCount);
+
+    return newDiv;
+}
+
+function clearSessionDivs() {
+    
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
 
     chrome.storage.local.clear();
-
-    let gang = await getAllSessions();
-    console.log(gang);
 
     chrome.runtime.sendMessage("pre_save_tabs", function(response) {
         console.log(response)
     });
 
-    var newSessionButton = document.getElementById('savebutton');
+    let initialSessions = await getAllSessions();
+    console.log(initialSessions);
+    initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
+
+    var newSessionButton = document.getElementById('createsession');
     newSessionButton.addEventListener('click', () => {
         createSession();
     }, false);

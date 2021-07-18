@@ -1,0 +1,91 @@
+#appheader {
+    display: block;
+    height: 40px;
+    position: relative;
+    margin: 0;
+    border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+#titletext {
+    margin: 0;
+    padding-left: 15px;
+    line-height: 30px;
+    font-size: 20px;
+    float: left;
+    display: block;
+    padding-top: 5px;
+}
+
+#content {
+    height: 410px;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    position: relative;
+    width: 360px;    
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#session--content {
+
+}
+
+#nosessionstext {
+    display: none;
+    font-style: italic;
+    font-size: 18px;
+    text-align: center;
+    color: rgb(122, 122, 122);
+}
+
+.session--div {
+    position: relative;
+    height: 70px;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    margin: 0;
+    overflow: hidden;
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+
+.session--div:hover {
+    transition: 0.25s;
+    background: rgb(207, 207, 207);
+}
+
+.session--title {
+    padding-left: 15px;
+    padding-top: 15px;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.session--tabcount {
+    padding-left: 15px;
+    font-size: 13px;    
+}
+
+#footer {
+    height: 50px;
+}
+
+.footerbuttons {
+    background-color: white;
+    height: 50px;
+    border: none;
+    transition: 0.35s;
+}
+
+.footerbuttons:hover {
+    background: rgb(207, 207, 207);
+}
+
+.footerbuttons:active {
+    transition: 0.05s;
+    background: rgb(185, 185, 185);
+}
+
+#createsession {
+    height: 50px;
+    width: 360px;
+}

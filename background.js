@@ -42,7 +42,6 @@ async function storeCurrentTabs() {
 
 //  pre-saves the provided tabs into the Chrome API under the name "currentabs"
 function currentTabsToChromeStorage(tabs) {
-    console.log("Tabs to save: ", tabs);  //  
     return new Promise((resolve, reject) => {
         try {
             chrome.storage.local.set({"currenttabs": tabs}, function(){});

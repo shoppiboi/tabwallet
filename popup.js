@@ -58,6 +58,23 @@ async function createSession() {
     initialLoad(allSessions);
 }
 
+async function deleteSession(sessionIndex) {
+
+    let allSessions = await getAllSessions();
+
+    let updatedSessions = [];
+
+    for (var i = 0; i <= allSessions.length; i++) {
+
+        if (i != sessionIndex) {
+            updatedSessions.push(allSessions[i]);
+        }
+    }
+
+    await updateSessions(updatedSessions);
+    initialLoad(updatedSessions);
+}
+
 //  pre-saves the provided tabs into the Chrome API under the name "currentabs"
 function updateSessions(sessions) {
     console.log("Session to save: ", sessions);  //  
@@ -75,6 +92,8 @@ function initialLoad(loadedSessions) {
     clearSessionDivs();
 
     let elementNoSessionsText = document.getElementById('nosessionstext');
+
+    console.log(loadedSessions.length);
 
     if (loadedSessions.length > 0) {
         elementNoSessionsText.style.display = 'none';
@@ -98,9 +117,28 @@ function renderSessions(sessions) {
 }
 
 function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
+
     let newDiv = document.createElement('div');
     newDiv.id = sessionIndex;
     newDiv.className = 'session--div';
+
+    let imgShowTabs = document.createElement('img');
+    imgShowTabs.className = 'show--tabs';
+    imgShowTabs.src = 'svgs/down.svg';
+
+    let imgRenameSession = document.createElement('img');
+    imgRenameSession.className = 'rename--session';
+    imgRenameSession.src = 'svgs/edit.svg';
+
+    let imgCopySession = document.createElement('img');
+    imgCopySession.className = 'copy--session--tabs';
+    imgCopySession.src = 'svgs/copy.svg ';
+
+    let imgDeleteSession = document.createElement('img');
+    imgDeleteSession.className = 'delete--session';
+    imgDeleteSession.src = 'svgs/delete.svg';
+    imgDeleteSession.title = 'Delete Session';
+    imgDeleteSession.onclick = function(){deleteSession(newDiv.id)};
 
     let title = document.createElement('div');
     title.className = 'session--title';
@@ -110,6 +148,11 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     tabCount.className = 'session--tabcount';
     tabCount.innerHTML = 'Number of tabs: ' + sessionTabCount;
 
+
+    newDiv.appendChild(imgShowTabs);
+    newDiv.appendChild(imgRenameSession);
+    newDiv.appendChild(imgCopySession);
+    newDiv.appendChild(imgDeleteSession);
     newDiv.appendChild(title);
     newDiv.append(tabCount);
 
@@ -126,7 +169,7 @@ function clearSessionDivs() {
 
 document.addEventListener('DOMContentLoaded', async function() {
 
-    // chrome.storage.local.clear();
+    chrome.storage.local.clear();
 
     chrome.runtime.sendMessage("pre_save_tabs", function(response) {
         console.log(response)

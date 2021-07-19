@@ -219,17 +219,17 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     newDiv.id = "session_" + sessionIndex;
     newDiv.className = 'session--div';
 
-    let imgShowTabs = document.createElement('img');
-    imgShowTabs.className = 'add--tabs--session';
-    imgShowTabs.src = 'svgs/add.svg';
-    imgShowTabs.title = 'Add highlighted tabs to Session';
-    imgShowTabs.onclick = function(){addTabToSession(sessionIndex)};
+    let imgOpenSession = document.createElement('img');
+    imgOpenSession.className = 'play--session';
+    imgOpenSession.src = 'svgs/play.svg';
+    imgOpenSession.title = 'Open Session';
+    imgOpenSession.onclick = function(){openClick(newDiv.id)};
 
-    let imgRenameSession = document.createElement('img');
-    imgRenameSession.className = 'play--session';
-    imgRenameSession.src = 'svgs/play.svg';
-    imgRenameSession.title = 'Open Session';
-    imgRenameSession.onclick = function(){openClick(newDiv.id)};    //  insert function for opening session
+    let imgAddTabs = document.createElement('img');
+    imgAddTabs.className = 'add--tabs--session';
+    imgAddTabs.src = 'svgs/add.svg';
+    imgAddTabs.title = 'Add highlighted tabs to Session';
+    imgAddTabs.onclick = function(){addTabToSession(sessionIndex)};
 
     let imgCopySession = document.createElement('img');
     imgCopySession.className = 'copy--session--tabs';
@@ -252,9 +252,8 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     tabCount.className = 'session--tabcount';
     tabCount.innerHTML = 'Number of tabs: ' + sessionTabCount;
 
-
-    newDiv.appendChild(imgShowTabs);
-    newDiv.appendChild(imgRenameSession);
+    newDiv.appendChild(imgOpenSession);
+    newDiv.appendChild(imgAddTabs);
     newDiv.appendChild(imgCopySession);
     newDiv.appendChild(imgDeleteSession);
     newDiv.appendChild(title);

@@ -60,17 +60,20 @@ async function createSession() {
 
 async function deleteSession(sessionIndex) {
 
+    console.log("Session to be deleted ID: ", sessionIndex);
+
     let allSessions = await getAllSessions();
 
     let updatedSessions = [];
 
-    for (var i = 0; i <= allSessions.length; i++) {
-
-        if (i != sessionIndex) {
-            updatedSessions.push(allSessions[i]);
+    if (allSessions.length > 1) {
+        for (var i = 0; i <= allSessions.length - 1; i++) {
+            if (i != Number(sessionIndex)) {
+                updatedSessions.push(allSessions[i]);
+            }
         }
     }
-
+    
     await updateSessions(updatedSessions);
     initialLoad(updatedSessions);
 }
@@ -93,7 +96,7 @@ function initialLoad(loadedSessions) {
 
     let elementNoSessionsText = document.getElementById('nosessionstext');
 
-    console.log(loadedSessions.length);
+    console.log("Number of sessions: ", loadedSessions.length);
 
     if (loadedSessions.length > 0) {
         elementNoSessionsText.style.display = 'none';
@@ -108,7 +111,7 @@ function renderSessions(sessions) {
 
     for (var i = 0; i < sessions.length; i++) {
 
-        console.log(sessions[i]);
+        console.log("Rendering sessions: ", sessions[i]);
 
         sessionContainer.appendChild(
             createSessionDiv(i, sessions[i].title, sessions[i].tabs.length)

@@ -10,6 +10,33 @@ function getCurrentTabs() {
     });
 }
 
+function getSpecificTab() {
+    return new Promise((resolve, reject) => {
+        try {
+            chrome.storage.local.get('currenttabs', function(result) {
+
+                let highlightedTabs = result.currenttabs.filter(tab => tab.highlighted === true);
+
+                let newTabs = [];
+
+                for (x in highlightedTabs) {
+                    newTabs.push(
+                        {
+                            favIconUrl: highlightedTabs[x].favIconUrl,
+                            title: highlightedTabs[x].title,
+                            url: highlightedTabs[x].url
+                        }
+                    );
+                }
+                
+                resolve(newTabs)
+            });
+        } catch(e) {   
+            reject("Could not get current tabs");
+        }
+    })
+}
+
 //  retrieves and returns all the Sessions stored in chrome.storage.local
 function getAllSessions() {
     return new Promise((resolve, reject) => {
@@ -165,8 +192,25 @@ function renameSession(sessionIndex, titleElement) {
     // titleElement.contenteditable = true;
 
     // sessionDiv.contentEditable = true;
+}
 
+async function addTabToSession(sessionIndex) {
+    let highlightedTabs = await getSpecificTab();
 
+    console.log(highlightedTabs);
+
+    let allSessions = await getAllSessions();
+
+    console.log(allSessions);
+
+    for (x in highlightedTabs) {
+        allSessions[sessionIndex].tabs.push(highlightedTabs[x]);
+    }
+
+    console.log(allSessions);
+
+    await updateSessions(allSessions);
+    initialLoad(allSessions);
 }
 
 function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
@@ -176,9 +220,10 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     newDiv.className = 'session--div';
 
     let imgShowTabs = document.createElement('img');
-    imgShowTabs.className = 'show--tabs';
-    imgShowTabs.src = 'svgs/down.svg';
-    imgShowTabs.title = 'Display tabs';
+    imgShowTabs.className = 'add--tabs--session';
+    imgShowTabs.src = 'svgs/add.svg';
+    imgShowTabs.title = 'Add highlighted tabs to Session';
+    imgShowTabs.onclick = function(){addTabToSession(sessionIndex)};
 
     let imgRenameSession = document.createElement('img');
     imgRenameSession.className = 'play--session';
@@ -228,7 +273,7 @@ function clearSessionDivs() {
 
 document.addEventListener('DOMContentLoaded', async function() {
 
-    chrome.storage.local.clear();
+    // chrome.storage.local.clear();
 
     chrome.runtime.sendMessage("pre_save_tabs", function(response) {
         console.log(response)
@@ -236,7 +281,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     let initialSessions = await getAllSessions();
     console.log(initialSessions);
-    // initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
+    initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
 
     var newSessionButton = document.getElementById('createsession');
     newSessionButton.addEventListener('click', () => {

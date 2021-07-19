@@ -1,60 +1,103 @@
 <!DOCTYPE html>
 <html lang= en >
-    <head>
-        <meta charset= UTF-8 >
-        <meta name=viewport content="width=device-width", initial-scale=1.0>
-        
-        <style>
-            body {
-                height: 500px;
-                width: 400px;
-                margin: 0;
-            }
-        </style>
-    </head>
+<head>
+    <meta charset= UTF-8 >
+    <meta name=viewport content="width=device-width", initial-scale=1.0>
     
-    <body>
-        <script src=popup.js></script>
-        <link rel=stylesheet  href= popup.css>
-    </body>
+    <style>
+        body {
+            height: 500px;
+            width: 400px;
+            margin: 0;
+        }
+    </style>
+</head>
 
-    <div id=container>
-        <div id=header>
-            <div id=appheader>
-                <h1 id=titletext>Tab Wallet</h1>
-                <div id=rightcontainer>
-                    <!--Exit button here-->
-                </div>
+<body>
+    <script src=popup.js></script>
+    <link rel=stylesheet  href= popup.css>
+</body>
+
+<div id=container>
+    <div id=header>
+        <div id=appheader>
+            <h1 id=titletext>Tab Wallet</h1>
+            <div id=rightcontainer>
+                <!--Exit button here-->
             </div>
-        </div>
-
-        <div id=content>
-            <div id=session--content>
-                <h3 id=nosessionstext>No sessions yet.</h3>
-
-                <div id=sessions>
-
-                    <div class=session--div>
-                        
-                        <!-- <img class=show--tabs src=svgs/down.svg title='Display tabs'>
-                        <img class=play--session src=svgs/play.svg title='Rename session'>
-                        <img class=copy--session--tabs src=svgs/copy.svg title='Copy tabs to clipboard'>
-                        <img class=delete--session src=svgs/delete.svg title='Delete session'>
-                        <div class=session--title>Zoology</div>
-                        <div class=session--tabcount>Number of tabs: 3</div>
-
-                        <div id=tabs>
-                            Tab 1
-                        </div> -->
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div id=footer>
-            <button class=footerbuttons id=createsession>Save</button>
         </div>
     </div>
+
+    <div id=content>
+        <div id=session--content>
+            <h3 id=nosessionstext>No sessions yet.</h3>
+
+            <div id=sessions>
+
+                <div class=sessions--container>
+
+                    <div class=session--div id=session_1>
+                        <div class=session--info>
+                            <div class=sessions--left--container>
+                                <div class=session--title>Zoology</div>
+                                <div class=session--tabcount>Number of tabs: 3</div>
+                            </div>
+
+                            <div class=sessions--right--container>
+                                <img class=play--session src=svgs/play.svg title='Rename session'>
+                                <img class=add--tabs--session src=svgs/add.svg title='Display tabs'>
+                                <img class=copy--session--tabs src=svgs/copy.svg title='Copy tabs to clipboard'>
+                                <img class=delete--session src=svgs/delete.svg title='Delete session'>
+                            </div>
+                        </div>
+
+                        <div class=tabs--container>
+                            <div class=tab--info id=tab_1>
+                                <div class=tabs--left--container>
+                                    <div class=tab--title>Youtube</div>
+                                    <div class=tab--url>https://www.youtube.com</div>
+                                </div>
+
+                                <div class=tabs--right--container>
+                                    <img class=copy--tab src=svgs/copy.svg title='Copy tabs to clipboard'>
+                                    <img class=delete--tab src=svgs/delete.svg title='Delete session'>
+                                </div>
+                            </div>
+
+                            <div class=tab--info id=tab_2>
+                                <div class=tabs--left--container>
+                                    <div class=tab--title>Google</div>
+                                    <div class=tab--url>https://www.google.fi</div>
+                                </div>
+
+                                <div class=tabs--right--container>
+                                    <img class=copy--tab src=svgs/copy.svg title='Copy tabs to clipboard'>
+                                    <img class=delete--tab src=svgs/delete.svg title='Delete session'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- <img class=show--tabs src=svgs/down.svg title='Display tabs'>
+                    <img class=play--session src=svgs/play.svg title='Rename session'>
+                    <img class=copy--session--tabs src=svgs/copy.svg title='Copy tabs to clipboard'>
+                    <img class=delete--session src=svgs/delete.svg title='Delete session'>
+                    <div class=session--title>Zoology</div>
+                    <div class=session--tabcount>Number of tabs: 3</div>
+
+                    <div id=tabs>
+                        Tab 1
+                    </div> -->
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id=footer>
+        <button class=footerbuttons id=createsession>Save</button>
+    </div>
+</div>
 </html>

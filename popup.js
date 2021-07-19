@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     let initialSessions = await getAllSessions();
     console.log(initialSessions);
-    initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
+    // initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
 
     var newSessionButton = document.getElementById('createsession');
     newSessionButton.addEventListener('click', () => {

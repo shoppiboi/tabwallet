@@ -53,8 +53,8 @@ async function createSession() {
     });
 
     allSessions.push(newSession);
-    await updateSessions(allSessions);
 
+    await updateSessions(allSessions);
     initialLoad(allSessions);
 }
 
@@ -110,13 +110,31 @@ function renderSessions(sessions) {
     let sessionContainer = document.getElementById('sessions');
 
     for (var i = 0; i < sessions.length; i++) {
-
-        console.log("Rendering sessions: ", sessions[i]);
-
         sessionContainer.appendChild(
             createSessionDiv(i, sessions[i].title, sessions[i].tabs.length)
         );
     }
+}
+
+async function clipboardSessionTabs(sessionIndex) {
+    let sessionTabs = (await getAllSessions())[sessionIndex].tabs;
+
+    let copyText = (function(){
+        let links = "";
+        
+        for (var i = 0; i <= sessionTabs.length - 1; i++) {
+            links += sessionTabs[i].url + '\n';
+        }
+
+        return links;
+    })();
+
+    let el = document.createElement('textarea');
+    el.value = copyText;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
 }
 
 function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
@@ -128,14 +146,18 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     let imgShowTabs = document.createElement('img');
     imgShowTabs.className = 'show--tabs';
     imgShowTabs.src = 'svgs/down.svg';
+    imgShowTabs.title = 'Display tabs';
 
     let imgRenameSession = document.createElement('img');
     imgRenameSession.className = 'rename--session';
     imgRenameSession.src = 'svgs/edit.svg';
+    imgRenameSession.title = 'Rename Session';
 
     let imgCopySession = document.createElement('img');
     imgCopySession.className = 'copy--session--tabs';
     imgCopySession.src = 'svgs/copy.svg ';
+    imgCopySession.title = 'Copy tabs to clipboard';
+    imgCopySession.onclick = function(){clipboardSessionTabs(newDiv.id)};
 
     let imgDeleteSession = document.createElement('img');
     imgDeleteSession.className = 'delete--session';

@@ -15,7 +15,6 @@ function getAllSessions() {
     return new Promise((resolve, reject) => {
         try {
             chrome.storage.local.get("sessions", function(result) {
-                console.log(result.sessions);
                 resolve(
                         (typeof(result.sessions) === "undefined") ? [] : result.sessions
                 );
@@ -60,7 +59,7 @@ async function createSession() {
 
 async function deleteSession(sessionIndex) {
 
-    console.log("Session to be deleted ID: ", sessionIndex);
+    console.log("Session to be deleted ID: ", sessionIndex.split('_')[1]);
 
     let allSessions = await getAllSessions();
 
@@ -68,7 +67,7 @@ async function deleteSession(sessionIndex) {
 
     if (allSessions.length > 1) {
         for (var i = 0; i <= allSessions.length - 1; i++) {
-            if (i != Number(sessionIndex)) {
+            if (i != Number(sessionIndex.split('_')[1])) {
                 updatedSessions.push(allSessions[i]);
             }
         }
@@ -117,7 +116,7 @@ function renderSessions(sessions) {
 }
 
 async function clipboardSessionTabs(sessionIndex) {
-    let sessionTabs = (await getAllSessions())[sessionIndex].tabs;
+    let sessionTabs = (await getAllSessions())[sessionIndex.split('_')[1]].tabs;
 
     let copyText = (function(){
         let links = "";
@@ -137,10 +136,43 @@ async function clipboardSessionTabs(sessionIndex) {
     document.body.removeChild(el);
 }
 
+async function openClick(sessionIndex) {
+
+    let session = (await getAllSessions())[sessionIndex.split('_')[1]];
+
+    for (tab in session.tabs) {
+
+        console.log(session.tabs[tab]);
+
+        // console.log(tabs.url[link])
+
+        openTab(session.tabs[tab].url);
+    }
+}
+
+function openTab(url) {
+    chrome.tabs.create({url: url});
+}
+
+function renameSession(sessionIndex, titleElement) {
+
+    console.log(document.getElementById((sessionIndex)));
+
+    let sessionTitle = document.getElementById((sessionIndex)).querySelector('.session--title');
+
+    titleElement.contentEditable = true;
+
+    // titleElement.contenteditable = true;
+
+    // sessionDiv.contentEditable = true;
+
+
+}
+
 function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
 
     let newDiv = document.createElement('div');
-    newDiv.id = sessionIndex;
+    newDiv.id = "session_" + sessionIndex;
     newDiv.className = 'session--div';
 
     let imgShowTabs = document.createElement('img');
@@ -149,9 +181,10 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     imgShowTabs.title = 'Display tabs';
 
     let imgRenameSession = document.createElement('img');
-    imgRenameSession.className = 'rename--session';
-    imgRenameSession.src = 'svgs/edit.svg';
-    imgRenameSession.title = 'Rename Session';
+    imgRenameSession.className = 'play--session';
+    imgRenameSession.src = 'svgs/play.svg';
+    imgRenameSession.title = 'Open Session';
+    imgRenameSession.onclick = function(){openClick(newDiv.id)};    //  insert function for opening session
 
     let imgCopySession = document.createElement('img');
     imgCopySession.className = 'copy--session--tabs';
@@ -168,6 +201,7 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     let title = document.createElement('div');
     title.className = 'session--title';
     title.innerHTML = sessionTitle;
+    title.onclick = function(){renameSession(newDiv.id, title)};
 
     let tabCount = document.createElement('div');
     tabCount.className = 'session--tabcount';
@@ -202,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     let initialSessions = await getAllSessions();
     console.log(initialSessions);
-    initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
+    // initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
 
     var newSessionButton = document.getElementById('createsession');
     newSessionButton.addEventListener('click', () => {

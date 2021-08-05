@@ -104,8 +104,17 @@ async function deleteSession(sessionIndex) {
     initialLoad(updatedSessions);
 }
 
-async function clipboardTab(tabIndex) {
+async function clipboardTab(sessionIndex, tabIndex) {
+    let sessionTab = (await getAllSessions())[sessionIndex.split('_')[1]].tabs[tabIndex];
 
+    let copyText = sessionTab.url;
+
+    let el = document.createElement('textarea');
+    el.value = copyText;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
 }
 
 async function deleteTab(sessionIndex, tabIndex) {
@@ -216,17 +225,15 @@ function openTab(url) {
     chrome.tabs.create({url: url});
 }
 
-function renameSession(sessionIndex, titleElement) {
+async function renameSession(sessionIndex) {
+    let allSessions = await getAllSessions();
 
-    console.log(document.getElementById((sessionIndex)));
+    var newName = prompt("Please enter new name for session: ");
 
-    let sessionTitle = document.getElementById((sessionIndex)).querySelector('.session--title');
+    allSessions[sessionIndex.split('_')[1]].title = newName;
 
-    titleElement.contentEditable = true;
-
-    // titleElement.contenteditable = true;
-
-    // sessionDiv.contentEditable = true;
+    await updateSessions(allSessions);
+    initialLoad(allSessions);
 }
 
 async function addTabToSession(sessionIndex) {
@@ -235,7 +242,7 @@ async function addTabToSession(sessionIndex) {
     let allSessions = await getAllSessions();
 
     for (x in highlightedTabs) {
-        allSessions[sessionIndex].tabs.push(highlightedTabs[x]);
+        allSessions[sessionIndex.split('_')[1]].tabs.push(highlightedTabs[x]);
     }
 
     await updateSessions(allSessions);
@@ -262,7 +269,7 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     let title = document.createElement('div');
     title.className = 'session--title';
     title.innerHTML = sessionTitle;
-    title.onclick = function(){renameSession(newSessionDiv.id, title)};
+    title.onclick = function(){renameSession(newSessionDiv.id)};
 
     let tabCount = document.createElement('div');
     tabCount.className = 'session--tabcount';
@@ -352,12 +359,13 @@ function createTabDiv(sessionIndex, tabIndex, tabTitle, tabUrl) {
     imgCopyTab.className = 'copy--tab';
     imgCopyTab.src = 'svgs/copy.svg'
     imgCopyTab.title = 'Copy tabs to clipboard'
+    imgCopyTab.onclick = function(){clipboardTab(sessionIndex, tabIndex)};
 
     let imgDeleteTab = document.createElement('img');
     imgDeleteTab.className = 'delete--tab';
     imgDeleteTab.src = 'svgs/delete.svg';
     imgDeleteTab.title = 'Delete session';
-    imgDeleteTab.onclick = function(){deleteTab(sessionIndex, tabIndex)}
+    imgDeleteTab.onclick = function(){deleteTab(sessionIndex, tabIndex)};
 
     rightContainer.appendChild(imgCopyTab);
     rightContainer.appendChild(imgDeleteTab);
@@ -386,7 +394,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     let initialSessions = await getAllSessions();
-    console.log(initialSessions);
     initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
 
     var newSessionButton = document.getElementById('createsession');

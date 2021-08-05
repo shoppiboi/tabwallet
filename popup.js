@@ -177,6 +177,9 @@ function renderSessions(sessions) {
 }
 
 function renderSessionTabs(sessionIndex, tabs) {
+
+    console.log(sessionIndex);
+
     let tabContainer = document.getElementById(sessionIndex).children[1];
 
     for (var i = 0; i < tabs.length; i++) {
@@ -227,8 +230,13 @@ function openTab(url) {
 
 async function renameSession(sessionIndex) {
     let allSessions = await getAllSessions();
+    const oldTitle = allSessions[sessionIndex.split('_')[1]].title;
 
-    var newName = prompt("Please enter new name for session: ");
+    var newName = prompt("Please enter new name for session: ", oldTitle);
+
+    if (newName == "" || newName == null) {
+        newName = oldTitle; 
+    }
 
     allSessions[sessionIndex.split('_')[1]].title = newName;
 
@@ -250,8 +258,18 @@ async function addTabToSession(sessionIndex) {
 }
 
 async function displaySessionTabs(sessionIndex) {
-    let sessionTabs = (await getAllSessions())[sessionIndex.split('_')[1]].tabs;
-    renderSessionTabs(sessionIndex, sessionTabs);
+    if (sessionIndex.includes("expanded")) {
+        let newId = sessionIndex.split('_');
+        newId.splice(-1);
+        newId = newId.join('_');
+        
+        document.getElementById(sessionIndex).id = newId;
+        clearSessionTabs(newId);
+    } else {
+        document.getElementById(sessionIndex).id = (sessionIndex + "_expanded"); 
+        let sessionTabs = (await getAllSessions())[sessionIndex.split('_')[1]].tabs;
+        renderSessionTabs(sessionIndex + "_expanded", sessionTabs);
+    }
 }
 
 function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
@@ -382,6 +400,14 @@ function clearSessionDivs() {
 
     while (container.firstChild) {
         container.removeChild(container.firstChild);
+    }
+}
+
+function clearSessionTabs(sessionIndex) {
+    let tabsContainer = document.getElementById(sessionIndex).children[1];
+
+    while (tabsContainer.firstChild) {
+        tabsContainer.removeChild(tabsContainer.firstChild)
     }
 }
 

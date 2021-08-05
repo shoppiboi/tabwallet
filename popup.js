@@ -108,8 +108,24 @@ async function clipboardTab(tabIndex) {
 
 }
 
-async function deleteTab(tabIndex) {
-    
+async function deleteTab(sessionIndex, tabIndex) {
+    let allSessions = (await getAllSessions());
+    allSessions[sessionIndex.split('_')[1]].tabs.splice(tabIndex, 1);
+
+    let tabs = allSessions[sessionIndex.split('_')[1]].tabs
+
+
+    if (tabs.length == 0) {
+        console.log("Hola como estas");
+        deleteSession(sessionIndex.split('_')[1]);
+    } else {
+        await updateSessions(allSessions);
+        initialLoad(allSessions);
+    }
+
+    if (tabs.length > 0) {
+        renderSessionTabs(sessionIndex, tabs);
+    }
 }
 
 //  pre-saves the provided tabs into the Chrome API under the name "currentabs"
@@ -126,6 +142,7 @@ function updateSessions(sessions) {
 }
 
 function initialLoad(loadedSessions) {
+
     clearSessionDivs();
 
     let elementNoSessionsText = document.getElementById('nosessionstext');
@@ -153,11 +170,9 @@ function renderSessions(sessions) {
 function renderSessionTabs(sessionIndex, tabs) {
     let tabContainer = document.getElementById(sessionIndex).children[1];
 
-    console.log(tabContainer);
-
     for (var i = 0; i < tabs.length; i++) {
         tabContainer.appendChild(
-            createTabDiv(i, tabs[i].title, tabs[i].url)
+            createTabDiv(sessionIndex, i, tabs[i].title, tabs[i].url)
         )
     }
 }
@@ -229,9 +244,6 @@ async function addTabToSession(sessionIndex) {
 
 async function displaySessionTabs(sessionIndex) {
     let sessionTabs = (await getAllSessions())[sessionIndex.split('_')[1]].tabs;
-
-    console.log(sessionTabs);
-
     renderSessionTabs(sessionIndex, sessionTabs);
 }
 
@@ -305,7 +317,7 @@ function createSessionDiv(sessionIndex, sessionTitle, sessionTabCount) {
     return newSessionDiv;
 }
 
-function createTabDiv(tabIndex, tabTitle, tabUrl) {
+function createTabDiv(sessionIndex, tabIndex, tabTitle, tabUrl) {
 
     let tabInfo = document.createElement('div');
     tabInfo.className = 'tab--info';
@@ -345,6 +357,7 @@ function createTabDiv(tabIndex, tabTitle, tabUrl) {
     imgDeleteTab.className = 'delete--tab';
     imgDeleteTab.src = 'svgs/delete.svg';
     imgDeleteTab.title = 'Delete session';
+    imgDeleteTab.onclick = function(){deleteTab(sessionIndex, tabIndex)}
 
     rightContainer.appendChild(imgCopyTab);
     rightContainer.appendChild(imgDeleteTab);
@@ -374,7 +387,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     let initialSessions = await getAllSessions();
     console.log(initialSessions);
-    // initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
+    initialLoad((typeof(initialSessions) == 'undefined') ? [] : initialSessions);
 
     var newSessionButton = document.getElementById('createsession');
     newSessionButton.addEventListener('click', () => {

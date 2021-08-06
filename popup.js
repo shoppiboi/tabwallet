@@ -257,6 +257,14 @@ async function addTabToSession(sessionIndex) {
 
     await updateSessions(allSessions);
     initialLoad(allSessions);
+
+    if (sessionIndex.includes("expanded")) {
+        let newId = sessionIndex.split('_');
+        newId.splice(-1);
+        newId = newId.join('_');
+        console.log(newId);
+        renderSessionTabs(newId, allSessions[sessionIndex.split('_')[1]].tabs);
+    }
 }
 
 async function displaySessionTabs(sessionIndex) {

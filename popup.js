@@ -123,9 +123,7 @@ async function deleteTab(sessionIndex, tabIndex) {
 
     let tabs = allSessions[sessionIndex.split('_')[1]].tabs
 
-
     if (tabs.length == 0) {
-        console.log("Hola como estas");
         deleteSession(sessionIndex.split('_')[1]);
     } else {
         await updateSessions(allSessions);
@@ -133,7 +131,12 @@ async function deleteTab(sessionIndex, tabIndex) {
     }
 
     if (tabs.length > 0) {
-        renderSessionTabs(sessionIndex, tabs);
+        let newId = sessionIndex.split('_');
+        newId.splice(-1);
+        newId = newId.join('_');
+        console.log(newId);
+
+        renderSessionTabs(newId, tabs);
     }
 }
 
@@ -177,15 +180,16 @@ function renderSessions(sessions) {
 }
 
 function renderSessionTabs(sessionIndex, tabs) {
-
-    console.log(sessionIndex);
+    if (!sessionIndex.includes("expanded")) {
+        document.getElementById(sessionIndex).id = (sessionIndex += "_expanded");
+    }
 
     let tabContainer = document.getElementById(sessionIndex).children[1];
 
     for (var i = 0; i < tabs.length; i++) {
         tabContainer.appendChild(
             createTabDiv(sessionIndex, i, tabs[i].title, tabs[i].url)
-        )
+        );
     }
 }
 
@@ -217,8 +221,6 @@ async function openClick(sessionIndex) {
     for (tab in session.tabs) {
 
         console.log(session.tabs[tab]);
-
-        // console.log(tabs.url[link])
 
         openTab(session.tabs[tab].url);
     }
@@ -262,7 +264,8 @@ async function displaySessionTabs(sessionIndex) {
         let newId = sessionIndex.split('_');
         newId.splice(-1);
         newId = newId.join('_');
-        
+        console.log(newId);
+
         document.getElementById(sessionIndex).id = newId;
         clearSessionTabs(newId);
     } else {
